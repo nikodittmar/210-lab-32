@@ -10,8 +10,11 @@ const int NUM_LANES = 4;
 const int START_SIZE_MIN = 1;
 const int START_SIZE_MAX = 3;
 
-const int CHANCE_PAID = 55;
-const int CHANCE_JOIN = 45;
+const int CHANCE_PAID = 46;
+const int CHANCE_JOIN = 39;
+const int CHANCE_SWITCH = 15;
+
+const int SIMULATION_LENGTH = 20;
 
 int main() {
     srand(time(0));
@@ -32,22 +35,33 @@ int main() {
     }
 
     int time = 0;
-    while (toll_booth.size() != 0) {
+    while (time < SIMULATION_LENGTH) {
         time += 1;
-        cout << "Time: " << time << " Operation: ";
-        int num = rand() % 100 + 1;
-        if (num <= CHANCE_PAID) {
-            cout << "Car paid: ";
-            Car removed = toll_booth.front();
-            removed.print();
-            toll_booth.pop_front();
-        } 
-        num = rand() % 100 + 1;
+        cout << "Time: " << time << endl;
+        
+
+        for (int i = 0; i < NUM_LANES; i++) {
+            int num = rand() % 100 + 1;
+            cout << "Lane: " << i + 1;
+            if (num <= CHANCE_JOIN) {
+                cout << " Joined: ";
+                Car toAdd = Car();
+                toAdd.print();
+                plaza[i].push_back(toAdd);
+            } else if (num <= CHANCE_JOIN + CHANCE_PAID) {
+                cout << " Paid: ";
+                Car removed = plaza[i].front();
+                removed.print();
+                plaza[i].pop_front();
+            } else {
+                cout << " Switched: ";
+            } 
+        }
+        
+        
         if (num <= CHANCE_JOIN) {
             cout << "Joined lane: ";
-            Car toAdd = Car();
-            toAdd.print();
-            toll_booth.push_back(toAdd);
+            
         }
         cout << "Queue: " << endl;
         if (toll_booth.size() == 0) {
