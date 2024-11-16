@@ -5,22 +5,30 @@
 
 using namespace std;
 
-const int START_SIZE = 2;
+const int NUM_LANES = 4;
+
+const int START_SIZE_MIN = 1;
+const int START_SIZE_MAX = 3;
+
 const int CHANCE_PAID = 55;
 const int CHANCE_JOIN = 45;
 
 int main() {
     srand(time(0));
 
-    deque<Car> toll_booth;
-
     cout << "Initial queue:" << endl;
 
-    for (int i = 0; i < START_SIZE; i++) {
-        Car toAdd = Car();
-        toll_booth.push_back(toAdd);
-        cout << "   ";
-        toAdd.print();
+    deque<Car> plaza[NUM_LANES];
+
+    for (int i = 0; i < NUM_LANES; i++) {
+        cout << "Lane " << i + 1 << ":" << endl;
+        int initial_car_count = rand() % START_SIZE_MAX + START_SIZE_MIN;
+        for (int j = 0; j < initial_car_count; j++) {
+            Car toAdd = Car();
+            plaza[i].push_back(toAdd);
+            cout << "   ";
+            toAdd.print();
+        }
     }
 
     int time = 0;
