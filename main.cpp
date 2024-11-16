@@ -14,6 +14,8 @@ const int CHANCE_PAID = 46;
 const int CHANCE_JOIN = 39;
 const int CHANCE_SWITCH = 15;
 
+const int CHANCE_JOIN_EMPTY = 50;
+
 const int SIMULATION_LENGTH = 20;
 
 int main() {
@@ -34,15 +36,29 @@ int main() {
         }
     }
 
+    cout << endl;
+
     int time = 0;
     while (time < SIMULATION_LENGTH) {
         time += 1;
         cout << "Time: " << time << endl;
-        
 
         for (int i = 0; i < NUM_LANES; i++) {
             int num = rand() % 100 + 1;
             cout << "Lane: " << i + 1;
+
+            if (plaza[i].size() == 0) {
+                if (num <= CHANCE_JOIN_EMPTY) {
+                    cout << " Joined: ";
+                    Car toAdd = Car();
+                    toAdd.print();
+                    plaza[i].push_back(toAdd);
+                } else {
+                    cout << " Nothing happened" << endl;
+                }
+                continue;
+            }
+
             if (num <= CHANCE_JOIN) {
                 cout << " Joined: ";
                 Car toAdd = Car();
@@ -55,23 +71,29 @@ int main() {
                 plaza[i].pop_front();
             } else {
                 cout << " Switched: ";
+                int rand_index = rand() % NUM_LANES;
+                while (rand_index == i && NUM_LANES != 1) {
+                    rand_index = rand() % NUM_LANES;
+                }
+                Car switched = plaza[i].back();
+                switched.print();
+                plaza[rand_index].push_back(switched);
+                plaza[i].pop_back();
             } 
         }
         
-        
-        if (num <= CHANCE_JOIN) {
-            cout << "Joined lane: ";
-            
-        }
-        cout << "Queue: " << endl;
-        if (toll_booth.size() == 0) {
-            cout << "   Empty" << endl;
-        } else {
-            for (Car car : toll_booth) {
-                cout << "   ";
-                car.print();
+        for (int i = 0; i < NUM_LANES; i++) {
+            cout << "Lane " << i + 1 << " Queue: " << endl;
+            if (plaza[i].size() == 0) {
+                cout << "   Empty" << endl;
+            } else {
+                for (Car car : plaza[i]) {
+                    cout << "   ";
+                    car.print();
+                }
             }
         }
+        
         cout << endl;
     }
     return 0;
